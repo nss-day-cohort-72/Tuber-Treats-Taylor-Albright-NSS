@@ -150,7 +150,6 @@ List<TuberOrder> tuberOrders = new List<TuberOrder>()
         OrderPlacedOnDate = new DateTime(2024, 11, 13, 16, 20, 0),
         CustomerId = 1,
         TuberDriverId = 1,
-        DeliveredOnDate = new DateTime(2024, 11, 13, 16, 49, 0),
         Toppings = new List<Topping>
         {
             new Topping { Id = 2, Name = "Sour Cream"},
@@ -163,18 +162,32 @@ app.MapGet("/api/orders", () =>
 {
     return Results.Ok(tuberOrders);
 });
-
 app.MapGet("/api/orders/{id}", (int id) => 
 {
     TuberOrder tuberOrder = tuberOrders.FirstOrDefault(to => to.Id == id);
     return Results.Ok(tuberOrder);
 });
-
 app.MapPost("/api/orders", (TuberOrder tuberOrder) => 
 {
     tuberOrder.OrderPlacedOnDate = DateTime.Now;
+    tuberOrders.Add(tuberOrder);
 
-    return Results.Created($"/api/orders/${tuberOrder.Id}", tuberOrder);
+    return Results.Created($"/api/orders/{tuberOrder.Id}", tuberOrder);
+});
+app.MapPut("/api/orders/{id}", (int id, TuberOrder tuberOrder) => 
+{
+    TuberOrder tuberToChange = tuberOrders.FirstOrDefault(to => to.Id == id);
+    tuberToChange.CustomerId = 2;
+
+    return Results.Ok(tuberToChange);
+
+});
+app.MapPost("/api/orders/{id}/complete", (int id, TuberOrder tuberOrder) => 
+{
+    TuberOrder tuberToChange = tuberOrders.FirstOrDefault(to => to.Id == id);
+    tuberToChange.DeliveredOnDate = DateTime.Now;
+
+    return Results.Ok(tuberToChange);
 });
 
 
