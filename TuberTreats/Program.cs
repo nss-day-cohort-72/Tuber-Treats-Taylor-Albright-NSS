@@ -1,3 +1,7 @@
+using System.Xml.Linq;
+using Microsoft.AspNetCore.Authorization.Infrastructure;
+using TuberTreats.Models;
+
 var builder = WebApplication.CreateBuilder(args);
 
 // Add services to the container.
@@ -20,7 +24,19 @@ app.UseHttpsRedirection();
 
 app.UseAuthorization();
 
-//add endpoints here
+List<Customer> customers = new List<Customer>()
+{
+    new Customer()
+    {
+        Id = 1,
+        Name = "Tom"
+    }
+};
+
+app.MapGet("/api/customers", () => 
+{
+    return customers;
+});
 
 app.Run();
 //don't touch or move this!
