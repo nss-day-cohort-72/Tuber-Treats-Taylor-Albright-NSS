@@ -26,17 +26,158 @@ app.UseAuthorization();
 
 List<Customer> customers = new List<Customer>()
 {
+    //5 customers
     new Customer()
     {
         Id = 1,
-        Name = "Tom"
-    }
+        Name = "Tom",
+        Address = "343 Guilty Dr"
+    },
+    new Customer()
+    {
+        Id = 2,
+        Name = "Tim",
+        Address = "101 Study Ave"
+    },
+    new Customer()
+    {
+        Id = 3,
+        Name = "Tammy",
+        Address = "321 Blastoff Ct"
+    },
+    new Customer()
+    {
+        Id = 4,
+        Name = "Teresa",
+        Address = "777 Lucky Dr"
+    },
+    new Customer()
+    {
+        Id = 5,
+        Name = "Tevin",
+        Address = "404 Lost Way"
+    },
 };
 
-app.MapGet("/api/customers", () => 
+List<TuberDriver> tuberDrivers = new List<TuberDriver>()
 {
-    return customers;
+    //3 drivers
+    new TuberDriver()
+    {
+        Id = 1,
+        Name = "Johnny Quickfast",
+        TuberDeliveries = 5,
+    },
+    new TuberDriver()
+    {
+        Id = 2,
+        Name = "Fred Frederickson",
+        TuberDeliveries = 8,
+    },
+    new TuberDriver()
+    {
+        Id = 3,
+        Name = "George Tippins",
+        TuberDeliveries = 12,
+    },
+};
+
+List<Topping> toppings = new List<Topping>()
+{
+    //5 toppings
+    new Topping()
+    {
+        Id = 1,
+        Name = "Bacon Bits"
+    },
+    new Topping()
+    {
+        Id = 2,
+        Name = "Sour Cream"
+    },
+    new Topping()
+    {
+        Id = 3,
+        Name = "Cheese"
+    },
+    new Topping()
+    {
+        Id = 4,
+        Name = "Butter"
+    },
+    new Topping()
+    {
+        Id = 5,
+        Name = "Salt"
+    },
+};
+
+List<TuberOrder> tuberOrders = new List<TuberOrder>()
+{
+    //3 orders, some have toppings
+    new TuberOrder()
+    {
+        Id = 1,
+        OrderPlacedOnDate = new DateTime(2024, 11, 13, 10, 30, 0),
+        CustomerId = 1,
+        TuberDriverId = 1,
+        DeliveredOnDate = new DateTime(2024, 11, 13, 11, 1, 0),
+        Toppings = new List<Topping>
+        {
+            new Topping { Id = 1, Name = "Bacon Bits"},
+            new Topping { Id = 2, Name = "Sour Cream"},
+            new Topping { Id = 3, Name = "Cheese"},
+            new Topping { Id = 4, Name = "Butter"},
+            new Topping { Id = 5, Name = "Salt"},
+        }
+    },
+    new TuberOrder()
+    {
+        Id = 2,
+        OrderPlacedOnDate = new DateTime(2024, 11, 13, 13, 30, 0),
+        CustomerId = 1,
+        TuberDriverId = 1,
+        DeliveredOnDate = new DateTime(2024, 11, 13, 13, 59, 0),
+        Toppings = new List<Topping>
+        {
+            new Topping { Id = 4, Name = "Butter"},
+            new Topping { Id = 5, Name = "Salt"},
+        }
+    },
+    new TuberOrder()
+    {
+        Id = 3,
+        OrderPlacedOnDate = new DateTime(2024, 11, 13, 16, 20, 0),
+        CustomerId = 1,
+        TuberDriverId = 1,
+        DeliveredOnDate = new DateTime(2024, 11, 13, 16, 49, 0),
+        Toppings = new List<Topping>
+        {
+            new Topping { Id = 2, Name = "Sour Cream"},
+            new Topping { Id = 3, Name = "Cheese"},
+        }
+    },
+};
+
+app.MapGet("/api/orders", () => 
+{
+    return Results.Ok(tuberOrders);
 });
+
+app.MapGet("/api/orders/{id}", (int id) => 
+{
+    TuberOrder tuberOrder = tuberOrders.FirstOrDefault(to => to.Id == id);
+    return Results.Ok(tuberOrder);
+});
+
+app.MapPost("/api/orders", (TuberOrder tuberOrder) => 
+{
+    tuberOrder.OrderPlacedOnDate = DateTime.Now;
+
+    return Results.Created($"/api/orders/${tuberOrder.Id}", tuberOrder);
+});
+
+
 
 app.Run();
 //don't touch or move this!
