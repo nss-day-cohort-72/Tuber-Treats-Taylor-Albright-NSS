@@ -66,19 +66,16 @@ List<TuberDriver> tuberDrivers = new List<TuberDriver>()
     {
         Id = 1,
         Name = "Johnny Quickfast",
-        TuberDeliveries = 5,
     },
     new TuberDriver()
     {
         Id = 2,
         Name = "Fred Frederickson",
-        TuberDeliveries = 8,
     },
     new TuberDriver()
     {
         Id = 3,
         Name = "George Tippins",
-        TuberDeliveries = 12,
     },
 };
 
@@ -109,6 +106,40 @@ List<Topping> toppings = new List<Topping>()
     {
         Id = 5,
         Name = "Salt"
+    },
+};
+
+List<TuberTopping> tuberToppings = new List<TuberTopping>()
+{
+    new TuberTopping()
+    {
+        Id = 1,
+        TuberOrderId = 1,
+        ToppingId = 1,
+    },
+    new TuberTopping()
+    {
+        Id = 2,
+        TuberOrderId = 2,
+        ToppingId = 3,
+    },
+    new TuberTopping()
+    {
+        Id = 3,
+        TuberOrderId = 3,
+        ToppingId = 4,
+    },
+    new TuberTopping()
+    {
+        Id = 4,
+        TuberOrderId = 2,
+        ToppingId = 2,
+    },
+    new TuberTopping()
+    {
+        Id = 5,
+        TuberOrderId = 1,
+        ToppingId = 5,
     },
 };
 
@@ -197,6 +228,71 @@ app.MapGet("/api/toppings", () =>
 {
     return Results.Ok(toppings);
 });
+
+app.MapGet("/api/toppings/{id}", (int id) => 
+{
+    Topping topping = toppings.FirstOrDefault(t => t.Id == id);
+    return Results.Ok(topping);
+});
+
+//                              TUBER TOPPINGS ENDPOINTS
+app.MapGet("/api/tubertoppings", () => 
+{
+    return Results.Ok(tuberToppings);
+});
+
+app.MapPost("/api/tubertoppings", (TuberTopping tuberTopping) => 
+{
+    tuberToppings.Add(tuberTopping);
+
+    return Results.Created($"/api/tubertoppings/{tuberTopping.Id}", tuberTopping);
+});
+
+app.MapDelete("/api/tubertoppings/{id}", (int id) => 
+{
+    TuberTopping tuberToppingToDelete = tuberToppings.FirstOrDefault(tt => tt.Id == id);
+    tuberToppings.Remove(tuberToppingToDelete);
+
+    return Results.NoContent();
+});
+
+app.MapGet("/api/customers", () => 
+{
+    return Results.Ok(customers);
+});
+
+app.MapGet("/api/customers/{id}", (int id) => 
+{
+    Customer customer = customers.FirstOrDefault(customer => customer.Id == id);
+
+    List<TuberOrder> customerTuberOrders = tuberOrders.Where(order => order.CustomerId == id).ToList();
+    customer.TuberOrders = customerTuberOrders;
+
+    return Results.Ok(customer);
+});
+
+app.MapDelete("/api/customers/{id}", (int id) => 
+{
+    Customer customerToDelete = customers.FirstOrDefault(customer => customer.Id == id);
+    customers.Remove(customerToDelete);
+
+    return Results.NoContent();
+});
+
+app.MapGet("/api/tuberdrivers", () => 
+{
+    return Results.Ok(tuberDrivers);
+});
+
+app.MapGet("api/tuberdrivers/{id}", (int id) => 
+{
+    TuberDriver tuberDriver = tuberDrivers.FirstOrDefault(driver => driver.Id == id);
+    List<TuberOrder> tuberDriverOrders = tuberOrders.Where(order => order.TuberDriverId == id).ToList();
+    tuberDriver.TuberDeliveries = tuberDriverOrders;
+
+    return Results.Ok(tuberDriver);
+});
+
 
 app.Run();
 //don't touch or move this!
