@@ -158,6 +158,8 @@ List<TuberOrder> tuberOrders = new List<TuberOrder>()
     },
 };
 
+
+//                                  TUBER ORDERS ENDPOINTS
 app.MapGet("/api/orders", () => 
 {
     return Results.Ok(tuberOrders);
@@ -190,7 +192,11 @@ app.MapPost("/api/orders/{id}/complete", (int id, TuberOrder tuberOrder) =>
     return Results.Ok(tuberToChange);
 });
 
-
+//                              TOPPINGS ENDPOINTS
+app.MapGet("/api/toppings", () => 
+{
+    return Results.Ok(toppings);
+});
 
 app.Run();
 //don't touch or move this!
